@@ -1,8 +1,10 @@
 import { Question } from "./question";
-import {isValid} from "./utils";
+import { isValid, createModal } from "./utils";
+import { getAuthForm, authWithEmailAndPassword } from "./auth";
 import './styles.css';
 
 const form = document.getElementById('form');
+const modalBtn = document.getElementById('modal-btn');
 const input = form.querySelector('#question-input');
 const submitBtn = form.querySelector('#submit');
 
@@ -25,8 +27,37 @@ const submitFormHandler = (event) => {
   }
 };
 
+const renderModalAfterAuth = (content) => {
+  if(typeof content === 'string') {
+    createModal('Warning!', content)
+  } else {
+    createModal('Questions list', Question.listToHTML(content))
+  }
+};
+
+const authFormHandler = (event) => {
+  event.preventDefault();
+
+  const btn = event.target.querySelector('button');
+  const email = event.target.querySelector('#email').value;
+  const password = event.target.querySelector('#password').value;
+
+  btn.disabled = true;
+  authWithEmailAndPassword(email, password)
+    .then(token => Question.fetch(token))
+    .then(renderModalAfterAuth)
+    .then(() => btn.disabled = false)
+};
+
+const openModal = () => {
+  createModal('Sing in', getAuthForm());
+  document.getElementById('auth-form')
+          .addEventListener('submit', authFormHandler, {once: true})
+};
+
 form.addEventListener('submit', submitFormHandler);
 input.addEventListener('input', () => {
   submitBtn.disabled = !isValid(input.value)
 });
 window.addEventListener('load', Question.renderList);
+modalBtn.addEventListener('click', openModal);

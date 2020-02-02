@@ -47,3 +47,29 @@ button {
         margin-left: 180px;
     }
 }
+
+.floating-btn {
+    position: fixed;
+    bottom: 50px;
+    right: 50px;
+}
+
+.modal {
+    max-width: 700px;
+    max-height: 400px;
+    margin: 200px auto;
+    overflow-y: auto;
+    background: white;
+}
+
+.modal > h1 {
+    text-align: center;
+}
+
+.modal .modal-content {
+    padding: 1rem;
+}
+
+.error {
+    color: red;
+}
